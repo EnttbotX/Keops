@@ -1,0 +1,21 @@
+# keops is a plugin designed to stop the automatic server shutdown on falix nodes because it closes after 1 hour
+# this plugin breaks this, please help by donating on my PayPal :(
+# I'm poor I'm from Argentina lol.
+
+# Placeholders $prefix$
+
+prefix: "&4&l[KE&E&lOPS}:"
+
+server-client: "Falix" # Falix - Aternos - Server.pro - other (only fot bStats).
+
+log-updates: true # only for people with the perm keops.kop
+
+# ---------- configuration zone ---------- #
+messages:
+  incorrect-password: "$prefix$ &cIncorrect Password!"
+  no-perms: "$prefix$ &cYou don't have permission to use that command."
+
+data-saved: # max 25 numbers and letters
+  password: 12345QWERTY
+
+  bypassed-users: # use /keops bypass [player]

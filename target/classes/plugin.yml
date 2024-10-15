@@ -1,0 +1,33 @@
+main: x.Entt.Keops.K
+name: Keops
+version: 1.0.0
+api-version: "1.13"
+author: Enttbot
+
+commands:
+  keops:
+    description: Access to the main keops plugin command.
+    aliases:
+      - kps
+  stop:
+    description: Stop the server with a password.
+  restart:
+    description: Reset the server with a password.
+
+permissions:
+  keops.*:
+    description: get all keops perms.
+    default: op
+    children:
+      keops.stop: true
+      keops.restart: true
+      keops.kop: true
+  keops.stop:
+    description: Perm to stop the server.
+    default: op
+  keops.restart:
+    description: Perm to reset the server.
+    default: op
+  keops.kop:
+    description: Perm to acces to /keops.
+    default: op
