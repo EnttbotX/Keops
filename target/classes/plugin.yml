@@ -1,7 +1,7 @@
 main: x.Entt.Keops.K
 name: Keops
-version: 1.0.0
-api-version: "1.13"
+version: 1.0.1
+api-version: "1.21"
 author: Enttbot
 
 commands:
@@ -25,9 +25,9 @@ permissions:
   keops.stop:
     description: Perm to stop the server.
     default: op
-  keops.restart:
+  keops.reload:
     description: Perm to reset the server.
     default: op
-  keops.kop:
-    description: Perm to acces to /keops.
+  keops.op:
+    description: Permission for /keops. (op commands).
     default: op

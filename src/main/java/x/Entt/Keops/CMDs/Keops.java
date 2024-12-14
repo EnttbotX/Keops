@@ -34,6 +34,11 @@ public class Keops implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (!sender.hasPermission("keops.op")) {
+            sender.sendMessage(MSG.color(prefix + "&cYou don't have permissions to do that!"));
+            return false;
+        }
+
         switch (args[0].toLowerCase()) {
             case "server-client":
                 if (args.length < 2) {
@@ -102,7 +107,7 @@ public class Keops implements CommandExecutor, TabCompleter {
 
                 List<String> bypassedUsers = config.getStringList("data-saved.bypassed-users");
 
-                if(!(bypassedUsers.contains(args[1]))) {
+                if (!bypassedUsers.contains(args[1])) {
                     bypassedUsers.add(args[1]);
                     config.set("data-saved.bypassed-users", bypassedUsers);
                     plugin.getFH().saveConfig();
@@ -116,12 +121,15 @@ public class Keops implements CommandExecutor, TabCompleter {
                 sender.sendMessage(MSG.color(prefix + " &cInvalid option. Use: server-client, log-updates, password, or bypass."));
                 break;
         }
-
         return true;
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, String[] args) {
+        if (!sender.hasPermission("keops.op")) {
+            return null;
+        }
+
         if (args.length == 1) {
             return Stream.of("server-client", "log-updates", "password", "bypass", "reload")
                     .filter(option -> option.startsWith(args[0].toLowerCase()))

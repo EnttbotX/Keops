@@ -1,10 +1,14 @@
 package x.Entt.Keops;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import x.Entt.Keops.CMDs.Keops;
-import x.Entt.Keops.CMDs.RestartCommand;
+import x.Entt.Keops.CMDs.ReloadCommand;
 import x.Entt.Keops.CMDs.StopCommand;
 import x.Entt.Keops.Utils.FileHandler;
 import x.Entt.Keops.Utils.Metrics;
@@ -15,6 +19,7 @@ import java.io.File;
 import java.util.Objects;
 
 public class K extends JavaPlugin {
+    public String version = getDescription().getVersion();
     public static String prefix;
     private FileHandler fh;
     int bStats = 23563;
@@ -38,21 +43,21 @@ public class K extends JavaPlugin {
             return fh.getConfig().getString("server-client", "other");
         }));
 
-        updateCheck();
+        searchUpdates();
 
         Bukkit.getConsoleSender().sendMessage(MSG.color
-                (prefix + " &av" + getDescription().getVersion() + " &2Enabled!"));
+                (prefix + " &av" + version + " &2Enabled!"));
     }
 
     @Override
     public void onDisable() {
         Bukkit.getConsoleSender().sendMessage(MSG.color
-                (prefix + " &av" + getDescription().getVersion() + " &cDisabled"));
+                (prefix + " &av" + version + " &cDisabled"));
     }
 
     private void registerCommands() {
         Objects.requireNonNull(getCommand("stop")).setExecutor(new StopCommand(this));
-        Objects.requireNonNull(getCommand("restart")).setExecutor(new RestartCommand(this));
+        Objects.requireNonNull(getCommand("restart")).setExecutor(new ReloadCommand(this));
         Objects.requireNonNull(getCommand("keops")).setExecutor(new Keops(this));
     }
 
@@ -64,19 +69,40 @@ public class K extends JavaPlugin {
         }
     }
 
-    private void updateCheck() {
-        int resourceId = 118563;
-        Updater updater = new Updater(this, resourceId);
+    public void searchUpdates() {
+        String downloadUrl = "https://www.spigotmc.org/resources/keops-anti-autostop-plugin-1-8-1-21.120208/";
+        TextComponent link = new TextComponent(MSG.color("&e&lClick here to download the update!"));
+        link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, downloadUrl));
+
+        boolean updateAvailable = false;
+        String latestVersion = "unknown";
 
         try {
-            if (updater.isUpdateAvailable()) {
-                getLogger().info(MSG.color(prefix + "&cThere is a new update of the plugin"));
-            } else {
-                getLogger().info(MSG.color(prefix + "&2Plugin is up to date"));
-            }
+            updateAvailable = Updater.isUpdateAvailable();
+            latestVersion = Updater.getLatestVersion();
         } catch (Exception e) {
-            getLogger().warning(MSG.color(prefix + "&4&lError checking for updates: " + e.getMessage()));
+            logToConsole("&cError checking for updates: " + e.getMessage());
         }
+
+        if (updateAvailable) {
+            logToConsole("&2&l===========================================");
+            logToConsole("&6&lNEW VERSION AVAILABLE!");
+            logToConsole("&e&lCurrent Version: &f" + version);
+            logToConsole("&e&lLatest Version: &f" + latestVersion);
+            logToConsole("&e&lDownload it here: &f" + downloadUrl);
+            logToConsole("&2&l===========================================");
+
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (player.hasPermission("keops.kop")) {
+                    player.sendMessage(MSG.color(prefix + "&e&lA new plugin update is available!"));
+                    player.spigot().sendMessage(link);
+                }
+            }
+        }
+    }
+
+    private void logToConsole(String message) {
+        Bukkit.getConsoleSender().sendMessage(MSG.color(prefix + message));
     }
 
     public FileHandler getFH() {
