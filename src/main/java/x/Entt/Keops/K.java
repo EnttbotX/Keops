@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Objects;
 
 public class K extends JavaPlugin {
-    public String version = getDescription().getVersion();
+    public String version = this.getDescription().getVersion();
     public static String prefix;
     private FileHandler fh;
     int bStats = 23563;
@@ -78,8 +78,9 @@ public class K extends JavaPlugin {
         String latestVersion = "unknown";
 
         try {
-            updateAvailable = Updater.isUpdateAvailable();
-            latestVersion = Updater.getLatestVersion();
+            Updater updater = new Updater(this, 115289);
+            updateAvailable = updater.isUpdateAvailable();
+            latestVersion = updater.getLatestVersion();
         } catch (Exception e) {
             logToConsole("&cError checking for updates: " + e.getMessage());
         }
@@ -93,7 +94,7 @@ public class K extends JavaPlugin {
             logToConsole("&2&l===========================================");
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.hasPermission("keops.kop")) {
+                if (player.hasPermission("keops.op")) {
                     player.sendMessage(MSG.color(prefix + "&e&lA new plugin update is available!"));
                     player.spigot().sendMessage(link);
                 }

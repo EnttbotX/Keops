@@ -1,7 +1,7 @@
 main: x.Entt.Keops.K
 name: Keops
-version: 1.0.1
-api-version: "1.21"
+version: 1.0.3
+api-version: "1.13"
 author: Enttbot
 
 commands:
