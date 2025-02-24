@@ -1,21 +1,58 @@
-# keops is a plugin designed to stop the automatic server shutdown on falix nodes because it closes after 1 hour
-# this plugin breaks this, please help by donating on my PayPal :(
-# I'm poor I'm from Argentina lol.
+#      `7MMF' `YMM'
+#       MM   .M'
+#       MM .d"     .gP"Ya   ,pW"Wq.`7MMpdMAo. ,pP"Ybd
+#       MMMMM.    ,M'   Yb 6W'   `Wb MM   `Wb 8I   `"
+#       MM  VMA   8M"""""" 8M     M8 MM    M8 `YMMMa.
+#       MM   `MM. YM.    , YA.   ,A9 MM   ,AP L.   I8
+#     .JMML.   MMb.`Mbmmd'  `Ybmd9'  MMbmmd'  M9mmmP'
+#        By Enttbot                  MM
+#                                  .JMML.
+#
+# Keops was invented to get free 24/7 servers on falix nodes,
+# we do not promise that it will work on another host
+#
+# You can use it for better security in your server.
+# ---------------------------------------------------------
 
-# Placeholders $prefix$
+# Now you can use PlaceholderAPI!
 
-prefix: "&4&l[KE&E&lOPS}:"
+# Variables with "$" are not usually, only can be used in places with "#$ var enabled"
 
-server-client: "Falix" # Falix - Aternos - Server.pro - other (only fot bStats).
+# Global Settings
+server-client: "Falix"              # Options: Falix, Aternos, Server.pro, Other (used only for bStats)
+log-updates: true                   # Enable logging of updates (requires permission: keops.kop)
+stop-countdown:
+  countdown: 60 # (20 = 1) time in ticks
+  message:
+    head: "&aServer stopping in:"
+    countdown: "&a- &f%keops-time-remaining%"
 
-log-updates: true # only for people with the perm keops.kop
+# Protection Settings:
+max-attempts: 3
+no-more-tries-message:
+  - "&cYou will not be able to shut stop/reload the server"
+  - "&cuntil you are removed from the ban list."
+  - "&8We notify a superior"
+  - "&a&l- Keops <3"
+notify-permission: "keops.warn"
 
-# ---------- configuration zone ---------- #
+data-saved:
+  password: "12345QWERTY"
+  bypassed-users: [] # Users who can stop/restart the server without using a password
+  bypassed-perm: "keops.nopass" # Users with this perm can stop/restart the server without using a password
+  banned-users: [] # Users who cannot stop/restart the server unless they are removed from this list
+
 messages:
-  incorrect-password: "$prefix$ &cIncorrect Password!"
-  no-perms: "$prefix$ &cYou don't have permission to use that command."
+  prefix: "&4&l[KE&E&lOPS]:"
 
-data-saved: # max 25 numbers and letters
-  password: 12345QWERTY
-
-  bypassed-users: # use /keops bypass [player]
+  incorrect-password: "&cIncorrect Password!"
+  no-perms: "&cYou don't have permission to use that command."
+  failed-attempt-recorded: "Warning! user $user$ is trying to stop/reload the server" #$ var enabled
+  gui-server-client: "&aServer Client clicked."
+  gui-log-updates: "&aLog Updates clicked."
+  gui-change-password: "&aChange Password clicked."
+  gui-manage-bypass: "&aManage Bypass Users clicked."
+  gui-manage-banned: "&aManage Banned Users clicked."
+  gui-change-notify: "&aChange Notify Permission clicked."
+  gui-reload-config: "&aReload Config clicked."
+  gui-config-reloaded: "&aConfiguration reloaded."

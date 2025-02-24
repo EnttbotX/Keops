@@ -12,7 +12,7 @@ import java.util.logging.Level;
 public class FileHandler {
 
     private final K plugin;
-    private File configFile;
+    private final File configFile;
     private FileConfiguration config;
 
     public FileHandler(K plugin) {
@@ -22,19 +22,11 @@ public class FileHandler {
         reloadConfig();
     }
 
-    /**
-     * Reloads the config from the file.
-     */
     public void reloadConfig() {
         this.config = YamlConfiguration.loadConfiguration(configFile);
         plugin.getLogger().log(Level.INFO, "Config file reloaded.");
     }
 
-    /**
-     * Retrieves the current FileConfiguration.
-     *
-     * @return FileConfiguration instance.
-     */
     public FileConfiguration getConfig() {
         if (this.config == null) {
             reloadConfig();
@@ -42,9 +34,6 @@ public class FileHandler {
         return this.config;
     }
 
-    /**
-     * Saves the current config to the file.
-     */
     public void saveConfig() {
         try {
             config.save(configFile);

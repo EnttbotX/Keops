@@ -10,40 +10,43 @@ import org.bukkit.plugin.java.JavaPlugin;
 import x.Entt.Keops.CMDs.Keops;
 import x.Entt.Keops.CMDs.ReloadCommand;
 import x.Entt.Keops.CMDs.StopCommand;
-import x.Entt.Keops.Utils.FileHandler;
-import x.Entt.Keops.Utils.Metrics;
-import x.Entt.Keops.Utils.Updater;
-import x.Entt.Keops.Utils.MSG;
+import x.Entt.Keops.Events.Events;
+import x.Entt.Keops.Utils.*;
 
 import java.io.File;
 import java.util.Objects;
 
 public class K extends JavaPlugin {
+    public FailedAttemptsManager fam = new FailedAttemptsManager();
     public String version = this.getDescription().getVersion();
+    public CountdownManager countdownManager;
     public static String prefix;
     private FileHandler fh;
     int bStats = 23563;
 
     @Override
     public void onEnable() {
-        registerCommands();
-        registerFiles();
-
         fh = new FileHandler(this);
+        countdownManager = new CountdownManager(this);
+        fam = new FailedAttemptsManager();
 
-        if (getConfig().getString("prefix") != null) {
-            prefix = fh.getConfig().getString("prefix");
+        saveDefaultConfig();
+
+        if (getConfig().getString("messages.prefix") != null) {
+            prefix = fh.getConfig().getString("messages.prefix");
         } else {
             prefix = "&4&l[KE&E&lOPS}:";
         }
 
         Metrics metrics = new Metrics(this, bStats);
 
-        metrics.addCustomChart(new Metrics.SimplePie("server_host", () -> {
-            return fh.getConfig().getString("server-client", "other");
-        }));
+        metrics.addCustomChart(new Metrics.SimplePie("server_host", () -> fh.getConfig().getString("server-client", "other")));
 
+        registerPAPI();
+        registerFiles();
         searchUpdates();
+        registerEvents();
+        registerCommands();
 
         Bukkit.getConsoleSender().sendMessage(MSG.color
                 (prefix + " &av" + version + " &2Enabled!"));
@@ -69,6 +72,19 @@ public class K extends JavaPlugin {
         }
     }
 
+    public void registerPAPI() {
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PAPI(this).register();
+            Bukkit.getConsoleSender().sendMessage(MSG.color(prefix + " &aPlaceholderAPI expansion registered!"));
+        } else {
+            Bukkit.getConsoleSender().sendMessage(MSG.color(prefix + "&cPlaceholderAPI not found. Placeholder expansions will not work."));
+        }
+    }
+
+    private void registerEvents() {
+        getServer().getPluginManager().registerEvents(new Events (this), this);
+    }
+
     public void searchUpdates() {
         String downloadUrl = "https://www.spigotmc.org/resources/keops-anti-autostop-plugin-1-8-1-21.120208/";
         TextComponent link = new TextComponent(MSG.color("&e&lClick here to download the update!"));
@@ -78,7 +94,7 @@ public class K extends JavaPlugin {
         String latestVersion = "unknown";
 
         try {
-            Updater updater = new Updater(this, 115289);
+            Updater updater = new Updater(this, 120208);
             updateAvailable = updater.isUpdateAvailable();
             latestVersion = updater.getLatestVersion();
         } catch (Exception e) {
@@ -86,12 +102,12 @@ public class K extends JavaPlugin {
         }
 
         if (updateAvailable) {
-            logToConsole("&2&l===========================================");
-            logToConsole("&6&lNEW VERSION AVAILABLE!");
-            logToConsole("&e&lCurrent Version: &f" + version);
-            logToConsole("&e&lLatest Version: &f" + latestVersion);
-            logToConsole("&e&lDownload it here: &f" + downloadUrl);
-            logToConsole("&2&l===========================================");
+            Bukkit.getConsoleSender().sendMessage(MSG.color("&2&l============= " + prefix + "&2&l============="));
+            Bukkit.getConsoleSender().sendMessage(MSG.color("&6&lNEW VERSION AVAILABLE!"));
+            Bukkit.getConsoleSender().sendMessage(MSG.color("&e&lCurrent Version: &f" + version));
+            Bukkit.getConsoleSender().sendMessage(MSG.color("&e&lLatest Version: &f" + latestVersion));
+            Bukkit.getConsoleSender().sendMessage(MSG.color("&e&lDownload it here: &f" + downloadUrl));
+            Bukkit.getConsoleSender().sendMessage(MSG.color("&2&l============= " + prefix + "&2&l============="));
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.hasPermission("keops.op")) {
